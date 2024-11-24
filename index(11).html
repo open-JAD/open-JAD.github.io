@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>open-JAD - 青年科技开源组织</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00ffff;
+            --secondary-color: #ff00ff;
+            --background-color: #0a0a0a;
+            --text-color: #ffffff;
+            --card-bg: #1a1a1a;
+            --neon-glow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color), 0 0 30px var(--primary-color);
+        }
+
+        .wandering-earth-theme {
+            --primary-color: #ff6b00;
+            --secondary-color: #ffd700;
+            --background-color: #1c2331;
+            --text-color: #e0e0e0;
+            --card-bg: #2c3e50;
+            --neon-glow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color), 0 0 30px var(--primary-color);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            transition: all 0.5s ease;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #fff;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+            animation: moveBackground 20s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50%, 50%); }
+        }
+
+        header h1, header p {
+            position: relative;
+            z-index: 2;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: var(--neon-glow);
+        }
+
+        nav {
+            background-color: rgba(26, 26, 26, 0.8);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 1rem;
+        }
+
+        nav ul li a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary-color);
+            text-shadow: var(--neon-glow);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .project-list, .team-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .project-card, .team-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--primary-color);
+        }
+
+        .project-card::before, .team-card::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255,255,255,0.1),
+                transparent
+            );
+            transition: transform 0.5s ease;
+        }
+
+        .project-card:hover, .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 6px 12px rgba(255,255,255,0.15);
+        }
+
+        .project-card:hover::before, .team-card:hover::before {
+            transform: translate(100%, 100%);
+        }
+
+        .project-card h3, .team-card h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .project-button {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .project-button:hover {
+            transform: scale(1.05);
+            box-shadow: var(--neon-glow);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .pagination button {
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .pagination button:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        .pagination button:disabled {
+            background-color: #444;
+            cursor: not-allowed;
+        }
+
+        #join-us {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px solid var(--primary-color);
+        }
+
+        #join-us h2 {
+            color: var(--primary-color);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        #join-form {
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        #join-form input, #join-form textarea {
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            background-color: rgba(255,255,255,0.1);
+            color: var(--text-color);
+        }
+
+        #join-form button {
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        #join-form button:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        footer {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            text-align: center;
+            padding: 1rem;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        #theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+        }
+
+        #theme-toggle:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 2rem;
+            z-index: 1000;
+        }
+
+        #project-search {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.5rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: rgba(255,255,255,0.1);
+            color: var(--text-color);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            border: 1px solid var(--primary-color);
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1001;
+        }
+
+        .search-result-item {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-result-item:hover {
+            background-color: var(--primary-color);
+            color: #000;
+        }
+
+        .team-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 2px solid var(--primary-color);
+            box-shadow: var(--neon-glow);
+        }
+
+        @media (max-width: 768px) {
+            .project-list, .team-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+            }
+            20% {
+                transform: translate(-5px, 5px);
+            }
+            40% {
+                transform: translate(-5px, -5px);
+            }
+            60% {
+                transform: translate(5px, 5px);
+            }
+            80% {
+                transform: translate(5px, -5px);
+            }
+            100% {
+                transform: translate(0);
+            }
+        }
+
+        .cyber-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.cyber-button:hover {
+    background-color: #0056b3;
+}
+
+
+        .glitch {
+            animation: glitch 1s infinite;
+            display: inline-block;
+        }
+
+        /* 霓虹灯效果 */
+        .neon {
+            text-shadow: var(--neon-glow);
+        }
+
+        /* 赛博朋克风格的背景网格 */
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.5;
+            transition: opacity 0.5s ease;
+        }
+
+        /* 流浪地球风格的背景 */
+        .wandering-earth-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/placeholder.svg?height=1080&width=1920');
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: -1;
+        }
+
+        .wandering-earth-theme .wandering-earth-bg {
+            opacity: 0.3;
+        }
+
+        .wandering-earth-theme .cyber-grid {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="cyber-grid"></div>
+    <div class="wandering-earth-bg"></div>
+    <header>
+        <h1 class="glitch">open-JAD</h1>
+        <p class="neon">科技开源组织(工作室)</p>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#about">关于我们</a></li>
+            <li><a href="#projects">开源项目</a></
+li>
+            <li><a href="#team">我们的团队</a></li>
+            <li><a href="#join-us">加入我们</a></li>
+            <li><a href="#contact">联系我们</a></li>
+        </ul>
+    </nav>
+    <main>
+        <section id="about">
+            <h2 class="neon">关于 open-JAD</h2>
+            <p>open-JAD 是一个隶属于JAD工作室的青年开源组织。我们致力于创建有用好用的开源项目，为开发者社区提供技术解决方案。我们的目标是通过创新和协作，推动技术的发展，并为全球的开发者提供有价值的工具和资源。</p>
+        </section>
+        <section id="projects">
+            <h2 class="neon">我们的开源/闭源项目</h2>
+            <div class="search-container">
+                <input type="text" id="project-search" placeholder="搜索项目...">
+                <div id="search-results" class="search-results"></div>
+            </div>
+            <div class="project-list">
+                <!-- 项目卡片将通过 JavaScript 动态生成 -->
+            </div>
+            <div class="pagination" id="project-pagination">
+                <button id="prev-project-page" disabled>上一页</button>
+                <button id="next-project-page">下一页</button>
+            </div>
+        </section>
+        <section id="team">
+            <h2 class="neon">我们的团队</h2>
+            <div class="team-list">
+                <!-- 团队成员卡片将通过 JavaScript 动态生成 -->
+            </div>
+            <div class="pagination" id="team-pagination">
+                <button id="prev-team-page" disabled>上一页</button>
+                <button id="next-team-page">下一页</button>
+            </div>
+        </section>
+        <section id="join-us">
+            <h2 class="neon">加入我们</h2>
+            <p>我们始终欢迎充满激情的青年开发者加入我们的团队。如果你对开源开发充满热情，并希望为开发者社区做出贡献，那么 open-JAD 就是你的理想之选！</p>
+            <a href=https://atomgit.com/jad class="cyber-button">加入我们</a>
+<!--https://atomgit-opensource.oss-cn-beijing.aliyuncs.com/code/lib/1.0.0/yunxiao-libs.min.js-->
+            <!--<form id="join-form">
+                <input type="text" placeholder="你的名字" required>
+                <input type="email" placeholder="你的邮箱" required>
+                <textarea placeholder="告诉我们为什么你想加入 open-JAD" required></textarea>
+                <button type="submit">申请加入</button>
+            </form>-->
+        </section>
+        <section id="contact">
+            <h2 class="neon">联系我们</h2>
+            <p>如果您对我们的开源项目感兴趣或有任何问题，请随时与我们联系：</p>
+            <p>邮箱：<span class="neon">open_jad@163.com</span></p>
+            <p>GitHub：<a href="https://github.com/open-jad" target="_blank" class="neon">github open_JAD</a></p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 open-JAD. 保留所有权利。</p>
+    </footer>
+    <button id="theme-toggle">切换风格</button>
+
+    <script>
+        // 主题切换功能
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        let isWanderingEarthTheme = false;
+
+        themeToggle.addEventListener('click', () => {
+            isWanderingEarthTheme = !isWanderingEarthTheme;
+            if (isWanderingEarthTheme) {
+                body.classList.add('wandering-earth-theme');
+                themeToggle.textContent = '切换风格';
+            } else {
+                body.classList.remove('wandering-earth-theme');
+                themeToggle.textContent = '切换风格';
+            }
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 项目数据
+        const projects = [
+            { name: "量子计算模拟器", description: "一个革命性的开源项目，旨在模拟量子计算过程，为未来的量子技术发展铺平道路。", link: "#" },
+            { name: "神经网络可视化", description: "一个强大的数据可视化库，帮助开发者直观地理解和优化复杂的神经网络结构。", link: "#" },
+            { name: "超光速通信协议", description: "专注于突破光速限制的通信协议，为星际通信提供理论基础。", link: "#" },
+            { name: "意识上传模拟器", description: "创新的人工智能项目，探索人类意识数字化的可能性。", link: "#" },
+            { name: "全息投影UI框架", description: "全新的用户界面设计系统，为未来的全息显示技术提供开发框架。", link: "#" },
+            { name: "时空编辑器", description: "革命性的代码编辑器，允许开发者在四维空间中可视化和操作代码结构。", link: "#" },
+        ];
+
+        // 团队成员数据
+        const teamMembers = [
+            { name: "米帝咖啡巨人", role: "ARO 首席程序", bio: "负责整体技术监督和主要技术开发", image: "/placeholder.svg?height=100&width=100" },
+            { name: "土豆", role: "CSO 首席营销官", bio: "负责营销战略规划与目标实现达成", image: "/placeholder.svg?height=100&width=100" },
+            { name: "澤衵（ga ni）", role: "CDO 首席美工", bio: "负责闭源项目的美术擅长二次元绘画", image: "/placeholder.svg?height=100&width=100" },
+            { name: "M", role: "CDO 首席美工", bio: "负责闭源项目的美术擅长素描绘画", image: "/placeholder.svg?height=100&width=100" },
+            { name: "铭枫", role: "CDO 首席美工", bio: "负责闭源项目的美术擅长二次元绘画", image: "/mf.svg?height=100&width=100" },
+            { name: "炎墨GOD.", role: "CKO 首席策划", bio: "负责游戏策划", image: "/placeholder.svg?height=100&width=100" },
+            { name: "白岸", role: "CMO 首席音乐", bio: "负责游戏策划兼职音乐制作", image: "/placeholder.svg?height=100&width=100" },
+            { name: "贺老师", role: "CZO 首席整活", bio: "负责游戏策划兼职音乐制作", image: "/placeholder.svg?height=100&width=100" },
+            
+            
+        ];
+
+        // 项目分页逻辑
+        let currentProjectPage = 1;
+        const projectsPerPage = 3;
+        const projectList = document.querySelector('.project-list');
+        const prevProjectButton = document.getElementById('prev-project-page');
+        const nextProjectButton = document.getElementById('next-project-page');
+
+        // 项目搜索功能
+        const projectSearch = document.getElementById('project-search');
+        const searchResults = document.getElementById('search-results');
+
+        projectSearch.addEventListener('input', () => {
+            const searchTerm = projectSearch.value.toLowerCase();
+            const filteredProjects = projects.filter(project => 
+                project.name.toLowerCase().includes(searchTerm) || 
+                project.description.toLowerCase().includes(searchTerm)
+            );
+
+            displaySearchResults(filteredProjects);
+
+            if (searchTerm === '') {
+                currentProjectPage = 1;
+                displayProjects(currentProjectPage, projects);
+            } else {
+                displayProjects(1, filteredProjects);
+            }
+        });
+
+        function displaySearchResults(filteredProjects) {
+            searchResults.innerHTML = '';
+            if (filteredProjects.length > 0) {
+                filteredProjects.forEach(project => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'search-result-item';
+                    resultItem.textContent = project.name;
+                    resultItem.addEventListener('click', () => {
+                        window.location.href = project.link;
+                    });
+                    searchResults.appendChild(resultItem);
+                });
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.style.display = 'none';
+            }
+        }
+
+        projectSearch.addEventListener('focus', () => {
+            if (searchResults.children.length > 0) {
+                searchResults.style.display = 'block';
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!searchResults.contains(e.target) && e.target !== projectSearch) {
+                searchResults.style.display = 'none';
+            }
+        });
+
+        // 修改 displayProjects 函数
+        function displayProjects(page, filteredProjects = projects) {
+            const start = (page - 1) * projectsPerPage;
+            const end = start + projectsPerPage;
+            const pageProjects = filteredProjects.slice(start, end);
+
+            projectList.innerHTML = '';
+            pageProjects.forEach(project => {
+                const projectCard = document.createElement('div');
+                projectCard.className = 'project-card';
+                projectCard.innerHTML = `
+                    <h3><a href="${project.link}" class="neon">${project.name}</a></h3>
+                    <p>${project.description}</p>
+                    <a href="${project.link}" class="project-button">探索未来</a>
+                `;
+                projectList.appendChild(projectCard);
+            });
+
+            prevProjectButton.disabled = page === 1;
+            nextProjectButton.disabled = page === Math.ceil(filteredProjects.length / projectsPerPage);
+        }
+
+        prevProjectButton.addEventListener('click', () => {
+            if (currentProjectPage > 1) {
+                currentProjectPage--;
+                displayProjects(currentProjectPage);
+            }
+        });
+
+        nextProjectButton.addEventListener('click', () => {
+            if (currentProjectPage < Math.ceil(projects.length / projectsPerPage)) {
+                currentProjectPage++;
+                displayProjects(currentProjectPage);
+            }
+        });
+
+        displayProjects(currentProjectPage);
+
+        // 团队成员分页逻辑
+        let currentTeamPage = 1;
+        const membersPerPage = 3;
+        const teamList = document.querySelector('.team-list');
+        const prevTeamButton = document.getElementById('prev-team-page');
+        const nextTeamButton = document.getElementById('next-team-page');
+
+        function displayTeamMembers(page) {
+            const start = (page - 1) * membersPerPage;
+            const end = start + membersPerPage;
+            const pageMembers = teamMembers.slice(start, end);
+
+            teamList.innerHTML = '';
+            pageMembers.forEach(member => {
+                const memberCard = document.createElement('div');
+                memberCard.className = 'team-card';
+                memberCard.innerHTML = `
+                    <img src="${member.image}" alt="${member.name}">
+                    <h3 class="neon">${member.name}</h3>
+                    <h4>${member.role}</h4>
+                    <p>${member.bio}</p>
+                `;
+                teamList.appendChild(memberCard);
+            });
+
+            prevTeamButton.disabled = page === 1;
+            nextTeamButton.disabled = page === Math.ceil(teamMembers.length / membersPerPage);
+        }
+
+        prevTeamButton.addEventListener('click', () => {
+            if (currentTeamPage > 1) {
+                currentTeamPage--;
+                displayTeamMembers(currentTeamPage);
+            }
+        });
+
+        nextTeamButton.addEventListener('click', () => {
+            if (currentTeamPage < Math.ceil(teamMembers.length / membersPerPage)) {
+                currentTeamPage++;
+                displayTeamMembers(currentTeamPage);
+            }
+        });
+
+        displayTeamMembers(currentTeamPage);
+
+        // 动画效果
+        const sections = document.querySelectorAll('section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // 表单提交
+        // const joinForm = document.getElementById('join-form');
+        // joinForm.addEventListener('submit', (e) => {
+        //     e.preventDefault();
+        //     alert('感谢您的申请！我们会尽快与您联系。');
+        //     joinForm.reset();
+        // });
+    </script>
+</body>
+</html>
+
