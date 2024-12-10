@@ -345,6 +345,59 @@
             color: #000;
         }
 
+
+
+
+
+
+        /* ... existing styles ... */
+    .partner-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .partner-card {
+        background-color: var(--card-bg);
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--primary-color);
+        text-align: center;
+    }
+
+    .partner-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 6px 12px rgba(255,255,255,0.15);
+    }
+
+    .partner-card img {
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+        margin-bottom: 1rem;
+        border: 2px solid var(--primary-color);
+        border-radius: 50%;
+        padding: 10px;
+        background-color: white;
+    }
+
+    .partner-card h3 {
+        margin-top: 0;
+        color: var(--primary-color);
+        font-family: 'Orbitron', sans-serif;
+    }
+
+
+
+
+
+
+
         .team-card img {
             width: 100px;
             height: 100px;
@@ -494,6 +547,21 @@ li>
                 <button id="prev-team-page" disabled>上一页</button>
                 <button id="next-team-page">下一页</button>
             </div>
+            <!-- ... existing code ... -->
+    <section id="team">
+        <!-- ... existing team section ... -->
+    </section>
+    <section id="partners">
+        <h2 class="neon">我们的合作伙伴</h2>
+        <div class="partner-list">
+            <!-- 合作伙伴卡片将通过 JavaScript 动态生成 -->
+        </div>
+        <div class="pagination" id="partner-pagination">
+            <button id="prev-partner-page" disabled>上一页</button>
+            <button id="next-partner-page">下一页</button>
+        </div>
+    </section>
+    <!-- ... rest of main content ... -->
         </section>
         <section id="join-us">
             <h2 class="neon">加入我们</h2>
@@ -568,6 +636,70 @@ li>
             
             
         ];
+
+
+        // 在现有的 script 标签中添加以下代码
+
+    // 合作伙伴数据
+    const partners = [
+        { name: "未来科技公司", description: "领先的人工智能和机器学习解决方案提供商", logo: "/placeholder.svg?height=150&width=150" },
+        { name: "星际通信集团", description: "专注于开发下一代星际通信技术", logo: "/placeholder.svg?height=150&width=150" },
+        { name: "量子计算实验室", description: "推动量子计算技术的商业化应用", logo: "/placeholder.svg?height=150&width=150" },
+        { name: "生态修复联盟", description: "致力于开发先进的环境修复和保护技术", logo: "/placeholder.svg?height=150&width=150" },
+        { name: "虚拟现实创新中心", description: "探索虚拟和增强现实技术的前沿应用", logo: "/placeholder.svg?height=150&width=150" },
+        { name: "能源革新协会", description: "开发清洁、高效的新能源解决方案", logo: "/placeholder.svg?height=150&width=150" },
+    ];
+
+    // 合作伙伴分页逻辑
+    let currentPartnerPage = 1;
+    const partnersPerPage = 3;
+    const partnerList = document.querySelector('.partner-list');
+    const prevPartnerButton = document.getElementById('prev-partner-page');
+    const nextPartnerButton = document.getElementById('next-partner-page');
+
+    function displayPartners(page) {
+        const start = (page - 1) * partnersPerPage;
+        const end = start + partnersPerPage;
+        const pagePartners = partners.slice(start, end);
+
+        partnerList.innerHTML = '';
+        pagePartners.forEach(partner => {
+            const partnerCard = document.createElement('div');
+            partnerCard.className = 'partner-card';
+            partnerCard.innerHTML = `
+                <img src="${partner.logo}" alt="${partner.name} logo">
+                <h3 class="neon">${partner.name}</h3>
+                <p>${partner.description}</p>
+            `;
+            partnerList.appendChild(partnerCard);
+        });
+
+        prevPartnerButton.disabled = page === 1;
+        nextPartnerButton.disabled = page === Math.ceil(partners.length / partnersPerPage);
+    }
+
+    prevPartnerButton.addEventListener('click', () => {
+        if (currentPartnerPage > 1) {
+            currentPartnerPage--;
+            displayPartners(currentPartnerPage);
+        }
+    });
+
+    nextPartnerButton.addEventListener('click', () => {
+        if (currentPartnerPage < Math.ceil(partners.length / partnersPerPage)) {
+            currentPartnerPage++;
+            displayPartners(currentPartnerPage);
+        }
+    });
+
+    // 初始化显示合作伙伴
+    displayPartners(currentPartnerPage);
+
+    // 在现有的 IntersectionObserver 中添加对新部分的观察
+    const partnerSection = document.querySelector('#partners');
+    observer.observe(partnerSection);
+            
+
 
         // 项目分页逻辑
         let currentProjectPage = 1;
