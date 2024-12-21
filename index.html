@@ -80,13 +80,15 @@
             text-shadow: var(--neon-glow);
         }
 
+
+        /*backdrop-filter: blur(10px);*/
         nav {
             background-color: rgba(26, 26, 26, 0.8);
             padding: 1rem;
             position: sticky;
             top: 0;
             z-index: 1000;
-            backdrop-filter: blur(10px);
+            
         }
 
         nav ul {
@@ -514,7 +516,12 @@ li>
             <h2 class="neon">联系我们</h2>
             <p>如果您对我们的项目感兴趣或有任何问题，请随时与我们联系：</p>
             <p>邮箱：<span class="neon">open_jad@163.com</span></p>
-            <p>GitHub：<a href="https://github.com/open-jad" target="_blank" class="neon">github open_JAD</a></p>
+            <p>GitHub：
+                <a href="https://github.com/open-jad" rel="noopener" target="_blank" class="neon">
+                    github open_JAD
+
+                </a>
+            </p>
         </section>
     </main>
     <footer>
@@ -551,7 +558,8 @@ li>
 
         // 项目数据
         const projects = [
-            { name: "EZ系列项目[送给小白的礼物]", description: "一个极简轻量级开源项目系列,为电脑小白考虑了他们不会的选项", link: "#" },
+        { name: "JAD webfind", description: "一个非常干净的官方网站网站的搜索网站", link: "https://open-jad.github.io/webfind/" },    
+        { name: "EZ系列项目[送给小白的礼物]", description: "一个极简轻量级开源项目系列,为电脑小白考虑了他们不会的选项", link: "#" },
             
 
         ];
